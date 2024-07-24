@@ -8,32 +8,31 @@ Created on Mon Jan  8 11:05:12 2024
 
 import os
 import pandas as pd
+import argparse
+parser = argparse.ArgumentParser()
 
 
 # Local
-os.chdir('/Users/chris/Desktop/test_genomes')
+#os.chdir('/Users/chris/Desktop/test_genomes')
 
-key = pd.read_csv('allcyano_rename.csv')
+parser.add_argument("-i", "--input", help="Input rename file key", default="rename.csv")
+parser.add_argument("-s", "--sourcename", help="Column name with existing file names", default="Assembly.file.name")
+parser.add_argument("-r", "--rename", help="Column with names to become the new name", default="Organism.Name")
 
-indicies = len(key)
+args = parser.parse_args()
 
-for index in range(0,indicies):
-    current_name = key.iloc[index]['AssemblyAccession']+'.fna'
-    new_name = key.iloc[index]['OrganismName']+'.fna'
-    
-    os.rename('/Users/chris/Desktop/test_genomes/'+current_name, '/Users/chris/Desktop/rename_test/'+new_name)
-    
-    
+
+key = pd.read_csv(args.input)
+
     
 # OSCER
 if __name__ == '__main__':
-    key = pd.read_csv('allcyano_rename.csv')
 
     indicies = len(key)
 
     for index in range(0,indicies):
-        current_name = key.iloc[index]['AssemblyAccession']+'.fna'
-        new_name = key.iloc[index]['OrganismName']+'.fna'
+        current_name = key.iloc[index][args.sourcename]+'.fna'
+        new_name = key.iloc[index][args.rename]+'.fna'
         
         os.rename('genomes/'+current_name, 'renamed/'+new_name)
 
