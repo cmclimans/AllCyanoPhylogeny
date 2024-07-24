@@ -45,6 +45,7 @@ def undo():
 if __name__ == "__main__":
     
     if args.undo == "T":
+        print('Copying renamed files back to genome and reset id')
         undo()
     
     else:
