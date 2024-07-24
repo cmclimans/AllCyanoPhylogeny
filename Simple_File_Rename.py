@@ -19,18 +19,24 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", help="Input rename file key", default="rename.csv")
 parser.add_argument("-s", "--sourcename", help="Column name with existing file names", default="Assembly.file.name")
 parser.add_argument("-r", "--rename", help="Column with names to become the new name", default="Organism.Name")
+parser.add_argument("-k", "--keeporiginal", help="Boolean keep original files", default="F")
+
 
 args = parser.parse_args()
 
-if not os.path.isdir("renamed"):
-    os.mkdir("renamed")
+if args.keeporiginal != "T" and args.keeporiginal != "F":
+    exit("-k/--keeporiginal must be T or F")
+    
 
+if not os.path.isdir("renamed"):
+    print("Creating directory \'renamed\' for renamed files.")
+    os.mkdir("renamed")
 
 key = pd.read_csv(args.input)
 
-    
-# OSCER
 if __name__ == '__main__':
+    
+    problemfiles = []
 
     indicies = len(key)
 
@@ -38,11 +44,21 @@ if __name__ == '__main__':
         current_name = key.iloc[index][args.sourcename]+'.fna'
         new_name = key.iloc[index][args.rename]+'.fna'
         
-        if not os.path.isfile('genomes/'+current_name) and os.path.isfile('renamed/'+new_name):
-            #print(f"{current_name} already moved.")
+        if os.path.isfile('renamed/' + new_name):
+            # print(f"{current_name} already moved.")
             continue
-        elif not os.path.isfile('genomes/'+current_name) and not os.path.isfile('renamed/'+new_name):
+        elif not os.path.isfile('genomes/' + current_name) and not os.path.isfile('renamed/' + new_name):
             print(f"{current_name} needs checked.")
+            problemfiles.append(current_name)
         else:
-            shutil.copy('genomes/'+current_name, 'renamed/'+new_name)
-
+            if args.keeporiginal == "F":
+                shutil.copy('genomes/' + current_name, 'renamed/' + new_name)
+            else:
+                os.rename('genomes/' + current_name, 'renamed/' + new_name)
+                
+                
+    if len(problemfiles) > 0:
+        with open("rename_check.txt", 'w') as f:
+            for item in problemfiles:
+                f.writelines(item+'\n')
+                
