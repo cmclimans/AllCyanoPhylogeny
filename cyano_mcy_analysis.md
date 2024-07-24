@@ -1,11 +1,15 @@
 # 1. Collect cyanobacteria genomes from NCBI
 
 # # 1a. Collect Genomes and Metadata on 12 July 2024
-# # # Use ncbi-cli (version 16.4.3)
+# # # Use ncbi-cli (version 16.24.0)
       source activate ncbi-cli
       datasets download genome taxon 1117 --assembly-source GenBank --include genome
+      unzip ncbi_dataset.zip
 
-      datasets summary genome taxon 1117 --assembly-source GenBank
+      mkdir genomes
+      cp ncbi_dataset/data/*/*.fna genomes/
+      cp ncbi_dataset/data/assembly_data_report.jsonl .
+
       dataformat tsv genome --inputfile assembly_data_report.jsonl > all_cyanos_report.tsv
 
 # # # Most genomes have multiple records (rows in tsv) depending on Biosample info provided as each attribute
@@ -22,7 +26,23 @@
 # # # add _2, _3, etc. to the replicate names. In the 12 July 2024 dataset there are 6,101 unique records
 # # # of which there are 4,453 unique 'Organism Names'.
 
-Rscript clean_genome_records_cmdline.R all_cyanos_report.tsv
+# # # R version 4.0.0, dplyr version 1.1.4
+Rscript --vanilla clean_genome_records_cmdline.R all_cyanos_report.tsv
 
 # # # Clean output is written to all_cyanos_report_clean.csv
 # # # Parsed output is written to parsed_cyanos_report_clean.csv
+# # # File for fasta file rename is written to rename.csvrename.csv
+
+
+# # 1b. Rename files with organism name rather than NCBI accessions
+
+# # # Python script will make renamed/ directory if needed, import the rename key
+# # # specified by -i, find files named per the sourcename column set by -s, and rename it
+# # # to the name in the rename column set by -r. The script will move the files but can be copied
+# # # to keep the original by setting -k to T.
+
+python Simple_File_Rename.py -i rename.csv -s Assembly.file.name -r Organism.Name
+
+# # # If a file cannot be found per the name in the sourcename column (set by -s), a message will be written
+# # # but the script will continue. Once the script is complete, a file rename_check.txt will be written for review
+# # # and to correct the error(s) in the sourcename. 
