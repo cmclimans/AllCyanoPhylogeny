@@ -9,6 +9,7 @@ Created on Mon Jan  8 11:05:12 2024
 import os
 import pandas as pd
 import argparse
+import shutil
 parser = argparse.ArgumentParser()
 
 
@@ -20,6 +21,9 @@ parser.add_argument("-s", "--sourcename", help="Column name with existing file n
 parser.add_argument("-r", "--rename", help="Column with names to become the new name", default="Organism.Name")
 
 args = parser.parse_args()
+
+if not os.path.isdir("renamed"):
+    os.mkdir("renamed")
 
 
 key = pd.read_csv(args.input)
@@ -34,5 +38,11 @@ if __name__ == '__main__':
         current_name = key.iloc[index][args.sourcename]+'.fna'
         new_name = key.iloc[index][args.rename]+'.fna'
         
-        os.rename('genomes/'+current_name, 'renamed/'+new_name)
+        if not os.path('genomes/'+current_name) and os.path('renamed/'+new_name):
+            #print(f"{current_name} already moved.")
+            continue
+        elif not os.path('genomes/'+current_name) and not os.path('renamed/'+new_name):
+            print(f"{current_name} needs checked.")
+        else:
+            shutil.copy('genomes/'+current_name, 'renamed/'+new_name)
 
