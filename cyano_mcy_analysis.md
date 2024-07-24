@@ -8,14 +8,19 @@
       datasets summary genome taxon 1117 --assembly-source GenBank
       dataformat tsv genome --inputfile assembly_data_report.jsonl > all_cyanos_report.tsv
 
-# # # Most genomes have multiple records (rows in tsv) depending on Biosample info provided each attribute
-# # # has a new record per attribute within the genome record (GCA...). Thus, the R script here removes
-# # # the multiple records and keeps one record per genome (i.e., per GCA value) per 'Assembly Release
+# # # Most genomes have multiple records (rows in tsv) depending on Biosample info provided as each attribute
+# # # has a new record per attribute within the genome accession (GCA...). Thus, the R script here removes
+# # # the multiple records and keeps one record per genome (i.e., per GCA accession value) per 'Assembly Release
 # # # Date'.
 # # #
-# # # If the same genome record (GCA...) has multiple 'Assembly Release Date's then the script will NOT
-# # # produce a corrected report file but will write an error message and file 'genome_records_tocheck.csv'
+# # # If the same genome accession (GCA...) has multiple 'Assembly Release Date's then the script will NOT
+# # # produce a dereplicated report file but will write an error message and file 'genome_records_tocheck.csv'
 # # # file to prompt manual check and decision of the genome record(s) at issue.
+# # #
+# # # While unique accessions will remain, 'Organism Names' (e.g, Microcystis sp. KLA) may contain
+# # # multiple identical names. At this time, identical names will be kept but the script will also
+# # # add _2, _3, etc. to the replicate names. In the 12 July 2024 dataset there are 6,101 unique records
+# # # of which there are 4,453 unique 'Organism Names'.
 
 Rscript clean_genome_records_cmdline.R all_cyanos_report.tsv
 
