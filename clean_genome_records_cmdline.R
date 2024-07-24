@@ -68,7 +68,7 @@ if (outputs == T & file.exists("genomes_clean_parsed.csv") == FALSE){
 
 rename_file = genome_records_parse %>%
   select(Assembly.Accession, Assembly.Name, Organism.Name) %>%
-  mutate(Assembly.file.name = paste0(Assembly.Accession,"_", Assembly.Name,"_genomic.fna")) %>%
+  mutate(Assembly.file.name = paste0(Assembly.Accession,"_", Assembly.Name,"_genomic")) %>%
   select(-Assembly.Accession, -Assembly.Name)
 
 rename_file$Assembly.file.name <- gsub(" ","_",rename_file$Assembly.file.name)
