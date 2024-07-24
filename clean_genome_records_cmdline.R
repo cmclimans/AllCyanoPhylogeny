@@ -73,6 +73,7 @@ rename_file = genome_records_parse %>%
 
 rename_file$Assembly.file.name <- gsub(" ","_",rename_file$Assembly.file.name)
 rename_file$Assembly.file.name <- gsub("/","_",rename_file$Assembly.file.name)
+rename_file$Assembly.file.name <- gsub("__","_",rename_file$Assembly.file.name)
 
 
 if (outputs == T & file.exists("rename.csv") == F){
