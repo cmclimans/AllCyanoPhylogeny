@@ -38,10 +38,10 @@ if __name__ == '__main__':
         current_name = key.iloc[index][args.sourcename]+'.fna'
         new_name = key.iloc[index][args.rename]+'.fna'
         
-        if not os.path('genomes/'+current_name) and os.path('renamed/'+new_name):
+        if not os.path.isfile('genomes/'+current_name) and os.path.isfile('renamed/'+new_name):
             #print(f"{current_name} already moved.")
             continue
-        elif not os.path('genomes/'+current_name) and not os.path('renamed/'+new_name):
+        elif not os.path.isfile('genomes/'+current_name) and not os.path.isfile('renamed/'+new_name):
             print(f"{current_name} needs checked.")
         else:
             shutil.copy('genomes/'+current_name, 'renamed/'+new_name)
